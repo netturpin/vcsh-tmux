@@ -1,0 +1,80 @@
+# vim: set filetype=tmux :
+
+#default colors configuration (needed for vim)
+set -g default-terminal "screen-256color"
+
+####Powerline-status
+run-shell "powerline-daemon -q"
+set -g status on
+set -g status-interval 2
+source "/home/mathieu/.local/lib/python2.7/site-packages/powerline/bindings/tmux/powerline.conf"
+
+#Make Tmux plugin manager compliant with XDG
+set-environment -g TMUX_PLUGIN_MANAGER_PATH "$XDG_CONFIG_HOME/tmux/plugins"
+
+#force utf8
+set-option -g status-utf8 on
+
+# use your mouse to select pane
+#set -g mouse-select-pane on
+
+# enable scroll with the mouse
+#set-option -g mouse-select-window on
+#set -g mode-mouse on
+set-option -g -q mouse on
+
+# not sure what these settings are for
+set-option -g status-keys vi
+set-window-option -g mode-keys vi
+
+# windows starts at 1
+set -g base-index 1
+
+#Pane start at 1
+set-window-option -g pane-base-index 1
+
+# display messages for a second
+set -g display-time 1000
+
+# prevent tmux to rename windows
+set -g set-titles off
+setw -g automatic-rename off
+
+# Set window notifications
+set-window-option -g monitor-activity on
+set -g visual-activity on
+#Rebind-keying the pane splitting bind-keyings
+# unbind-key % # Remove default bind-keyings since we're replacing
+bind-key | split-window -h
+bind-key - split-window -v
+
+# pane movement
+bind-key j command-prompt -p "join pane from:"  "join-pane -s '%%'"
+bind-key s command-prompt -p "send pane to:"  "join-pane -t '%%'"
+
+#Vim-Tmux integration
+# Smart pane switching with awareness of vim splits
+# See: https://github.com/christoomey/vim-tmux-navigator
+is_vim='echo "#{pane_current_command}" | grep -iqE "(^|\/)g?(view|n?vim?x?)(diff)?$"'
+bind-key -n C-h if-shell "$is_vim" "send-keys C-h" "select-pane -L"
+bind-key -n C-j if-shell "$is_vim" "send-keys C-j" "select-pane -D"
+bind-key -n C-k if-shell "$is_vim" "send-keys C-k" "select-pane -U"
+bind-key -n C-l if-shell "$is_vim" "send-keys C-l" "select-pane -R"
+bind-key -n C-\ if-shell "$is_vim" "send-keys C-\\" "select-pane -l"
+
+#Tmux Plugin Manager
+# List of plugins
+#set -g @plugin 'tmux-plugins/tmux-sidebar'
+set -g @tpm_plugins '         \
+  tmux-plugins/tpm            \
+  tmux-plugins/tmux-copycat   \
+  tmux-plugins/tmux-yank      \
+'
+
+# # Other examples:
+# # set -g @plugin 'github_username/plugin_name'
+# # set -g @plugin 'git@github.com/user/plugin'
+# # set -g @plugin 'git@bitbucket.com/user/plugin'
+#
+# # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run "$TMUX_PLUGIN_MANAGER_PATH/tpm/tpm"
