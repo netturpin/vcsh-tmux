@@ -7,7 +7,7 @@ set -g default-terminal "screen-256color"
 run-shell "powerline-daemon -q"
 set -g status on
 set -g status-interval 2
-source "/home/mathieu/.local/lib/python2.7/site-packages/powerline/bindings/tmux/powerline.conf"
+source "$HOME/.local/lib/python2.7/site-packages/powerline/bindings/tmux/powerline.conf"
 
 #Make Tmux plugin manager compliant with XDG
 set-environment -g TMUX_PLUGIN_MANAGER_PATH "$XDG_CONFIG_HOME/tmux/plugins"
@@ -32,6 +32,9 @@ set -g base-index 1
 
 #Pane start at 1
 set-window-option -g pane-base-index 1
+
+# Set escape-time
+set-option -sg escape-time 10
 
 # display messages for a second
 set -g display-time 1000
